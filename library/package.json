@@ -1,0 +1,16 @@
+{
+  "name": "library",
+  "version": "1.0.0",
+  "description": "library fullStack",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo test"
+  },
+  "author": "dhleung",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.10.0",
+    "graphql": "^16.8.1",
+    "uuid": "^9.0.1"
+  }
+}
