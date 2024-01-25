@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useApolloClient, useMutation } from '@apollo/client'
 import { LOGIN } from '../queries'
 import { useNavigate } from "react-router-dom"
+import { AuthContext } from '../contexts'
 
-const LoginForm = ({ token, setError, setToken }) => {
+const LoginForm = ({ setError }) => {
 
   const navigate = useNavigate();
 
@@ -11,7 +12,7 @@ const LoginForm = ({ token, setError, setToken }) => {
   const [password, setPassword] = useState('')
 
   const client = useApolloClient()
-
+  const {token, setToken} = useContext(AuthContext) 
 
   const [ login ] = useMutation(LOGIN, {
     onError: (error) => {
@@ -38,7 +39,7 @@ const LoginForm = ({ token, setError, setToken }) => {
   }
 
   // important to check localstorage instead of the state token
-  if (localStorage.getItem('user-token')) {
+  if (token) {
     return (
       <div>
         <h1>You are logged in</h1>

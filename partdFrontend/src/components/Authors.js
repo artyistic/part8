@@ -1,10 +1,13 @@
 import { useQuery } from "@apollo/client"
 import { ALLAUTHORS } from "../queries"
 import ChangeAuthor from "./ChangeAuthor"
+import { AuthContext } from "../contexts"
+import { useContext } from "react"
 
 const Authors = () => {
 
   const result = useQuery(ALLAUTHORS)
+  const {token} = useContext(AuthContext)
 
   if (result.loading) {
     return <div>Loading...</div>
@@ -29,7 +32,7 @@ const Authors = () => {
           ))}
         </tbody>
       </table>
-      <ChangeAuthor authors={result.data.allAuthors}/> 
+      {token && <ChangeAuthor authors={result.data.allAuthors}/>} 
     </div>
   )
 }
