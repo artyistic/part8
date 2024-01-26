@@ -7,6 +7,7 @@ import Account from './components/Account'
 import ErrMsg from './components/ErrMsg'
 
 import { AuthContext } from './contexts.js'
+import { MsgContext } from './contexts.js'
 
 import {
   BrowserRouter as Router,
@@ -20,30 +21,40 @@ const App = () => {
 
   const [error, setError] = useState('')
   const [token, setToken] = useState(null)
-  const value = { token, setToken }
+  const AuthValue = { token, setToken }
+
+  const popup = (msg) => {
+    setError(msg)
+    setTimeout(() => setError(''), 5000)
+  }
+
+  const ErrValue = { error, popup }
 
   useEffect(() => {
     setToken(localStorage.getItem('user-token'))
   }, [])
+
   return (
-    <AuthContext.Provider value={value}>
-      <ErrMsg msg={error}/>
-      <Router>
-        <div>
-          <Link style={padding} to="/authors">authors</Link>
-          <Link style={padding} to="/books">books</Link>
-          {token && <Link style={padding} to="/addBook">add a book</Link>}
-          <Link style={padding} to="/login">Account</Link>
-        </div>
-        <Routes>
-          <Route path='/authors' element={<Authors/>}></Route>
-          <Route path='/books' element={<Books/>}></Route>
-          <Route path='/addBook' element={<NewBook/>}></Route>
-          <Route path='/' element={<Books/>}></Route>
-          <Route path='/login' element={<Account setError={setError}/>}/>
-        </Routes>
-      </Router>
-    </AuthContext.Provider>
+    <MsgContext.Provider value={ErrValue}>
+      <AuthContext.Provider value={AuthValue}>
+        <ErrMsg msg={error}/>
+        <Router>
+          <div>
+            <Link style={padding} to="/authors">authors</Link>
+            <Link style={padding} to="/books">books</Link>
+            {token && <Link style={padding} to="/addBook">add a book</Link>}
+            <Link style={padding} to="/login">Account</Link>
+          </div>
+          <Routes>
+            <Route path='/authors' element={<Authors/>}></Route>
+            <Route path='/books' element={<Books/>}></Route>
+            <Route path='/addBook' element={<NewBook/>}></Route>
+            <Route path='/' element={<Books/>}></Route>
+            <Route path='/login' element={<Account/>}/>
+          </Routes>
+        </Router>
+      </AuthContext.Provider>
+    </MsgContext.Provider>
   )
 }
 

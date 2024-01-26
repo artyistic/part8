@@ -3,8 +3,9 @@ import { useApolloClient, useMutation } from '@apollo/client'
 import { LOGIN } from '../queries'
 import { useNavigate } from "react-router-dom"
 import { AuthContext } from '../contexts'
+import { MsgContext } from '../contexts'
 
-const LoginForm = ({ setError }) => {
+const LoginForm = () => {
 
   const navigate = useNavigate();
 
@@ -13,10 +14,11 @@ const LoginForm = ({ setError }) => {
 
   const client = useApolloClient()
   const {token, setToken} = useContext(AuthContext) 
+  const {setMsg} = useContext(MsgContext)
 
   const [ login ] = useMutation(LOGIN, {
     onError: (error) => {
-      setError(error.graphQLErrors[0].message)
+      setMsg(error.graphQLErrors[0].message)
     },
     onCompleted: (data) => {
       const token = data.login.value

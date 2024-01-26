@@ -1,5 +1,5 @@
 const ErrMsg = ({msg}) =>{
-  if (msg == null)
+  if (msg === '')
       return null
   else{
       return (
