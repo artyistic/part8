@@ -59,4 +59,24 @@ const LOGIN = gql`
   }
 `
 
-export { ALLBOOKS, ALLAUTHORS, CREATEBOOK, CHANGEAUTHOR, LOGIN }
+const ALLGENRES = gql`
+  query {
+    allGenres
+  }
+`
+
+const FILTERBOOKSBYGENRE = gql`
+  query FilterBooksByGenre($genre: String!) {
+    filterBooksByGenre(genre: $genre) {
+      title
+			published
+      author {
+        bookCount
+        name
+      }
+    }
+}
+
+`
+
+export { ALLBOOKS, ALLAUTHORS, CREATEBOOK, CHANGEAUTHOR, LOGIN, ALLGENRES, FILTERBOOKSBYGENRE }

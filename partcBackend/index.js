@@ -56,6 +56,8 @@ const typeDefs = `
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
     me: User
+    allGenres: [String!]
+    filterBooksByGenre(genre: String!): [Book!]
   }
 
   type Mutation {
@@ -92,7 +94,29 @@ const resolvers = {
     },
     me: (root, args, context) => {
       return context.currentUser
+    },
+    allGenres: async () => {
+      const books = await Book.find({})
+      const mergeDedupe = (arr) => {
+        return [...new Set([].concat(...arr))];
+      }
+      const genresArrays = books.map(b => b.genres)
+      return mergeDedupe(genresArrays)
+    },
+    filterBooksByGenre: async (root, args) => {
+      if (args.genre === '') {
+        return Book.find({}).populate('author')
+      }
+      return Book.find({
+        $expr: {
+          $in: [
+            args.genre,
+            "$genres"
+          ]
+        }
+      }).populate('author')
     }
+
   },
   Mutation: {
     addBook: async (root, args, context) => {
