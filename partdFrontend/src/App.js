@@ -5,6 +5,7 @@ import Books from './components/Books'
 import NewBook from './components/NewBook'
 import Account from './components/Account'
 import ErrMsg from './components/ErrMsg'
+import Rec from './components/Rec.js'
 
 import { AuthContext } from './contexts.js'
 import { MsgContext } from './contexts.js'
@@ -43,6 +44,7 @@ const App = () => {
             <Link style={padding} to="/authors">authors</Link>
             <Link style={padding} to="/books">books</Link>
             {token && <Link style={padding} to="/addBook">add a book</Link>}
+            {token && <Link style={padding} to="/recommendations">recommendations</Link>}
             <Link style={padding} to="/login">Account</Link>
           </div>
           <Routes>
@@ -51,6 +53,7 @@ const App = () => {
             <Route path='/addBook' element={<NewBook/>}></Route>
             <Route path='/' element={<Books/>}></Route>
             <Route path='/login' element={<Account/>}/>
+            <Route path='/recommendations' element={<Rec/>}/>
           </Routes>
         </Router>
       </AuthContext.Provider>
