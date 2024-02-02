@@ -15,6 +15,9 @@ import {
   Routes, Route, Link
 } from 'react-router-dom'
 
+import { useSubscription } from '@apollo/client'
+import { BOOK_ADDED } from './queries.js'
+
 const App = () => {
   const padding = {
     padding: 5
@@ -34,6 +37,13 @@ const App = () => {
   useEffect(() => {
     setToken(localStorage.getItem('user-token'))
   }, [])
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({data}) => {
+      console.log(data.data.bookAdded)
+      popup(`Book ${data.data.bookAdded.title} by ${data.data.bookAdded.author} added`)
+    }
+  })
 
   return (
     <MsgContext.Provider value={ErrValue}>
