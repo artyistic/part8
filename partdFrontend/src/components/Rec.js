@@ -1,13 +1,10 @@
 import { useQuery } from "@apollo/client"
-import { FILTERBOOKSBYGENRE, LOGGEDINUSER } from "../queries"
+import { REC } from "../queries"
 
 const Rec = () => {
-  const user = useQuery(LOGGEDINUSER)
-  const recs = useQuery(FILTERBOOKSBYGENRE, {
-    variables: {genre: user.data.me.favoriteGenre}
-  })
+  const favBooks = useQuery(REC)
 
-  if (user.loading || recs.loading) {
+  if (favBooks.loading) {
     return <div>Loading...</div>
   }
 
@@ -16,7 +13,7 @@ const Rec = () => {
   return (
     <>
       <h2>recommendations</h2>
-      books in your favorite genre <b>{user.data.me.favoriteGenre}</b>
+      books in your favorite genre <b>{favBooks.data.me.favoriteGenre}</b>
       <table>
         <tbody>
           <tr>
@@ -24,7 +21,7 @@ const Rec = () => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {recs.data.filterBooksByGenre.map((a) => (
+          {favBooks.data.getUserFavBooks.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>

@@ -77,13 +77,17 @@ const FILTERBOOKSBYGENRE = gql`
   ${BOOK_DETAIL}
 `
 
-const LOGGEDINUSER = gql`
-query {
-  me {
-    username
-    favoriteGenre
+const REC = gql`
+  query {
+    getUserFavBooks {
+      ...bookDetails
+    }
+    me {
+      username
+      favoriteGenre
+    }
   }
-}
+  ${BOOK_DETAIL}
 `
 
-export { ALLBOOKS, ALLAUTHORS, CREATEBOOK, CHANGEAUTHOR, LOGIN, ALLGENRES, FILTERBOOKSBYGENRE, LOGGEDINUSER }
+export { ALLBOOKS, ALLAUTHORS, CREATEBOOK, CHANGEAUTHOR, LOGIN, ALLGENRES, FILTERBOOKSBYGENRE, REC }
