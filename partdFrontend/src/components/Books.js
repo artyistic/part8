@@ -1,13 +1,14 @@
 import { useQuery } from "@apollo/client"
-import { ALLGENRES, FILTERBOOKSBYGENRE } from "../queries"
+import { ALLBOOKS, ALLGENRES } from "../queries"
 import { useState } from "react"
 
 const Books = () => {
 
   const [filter, setFilter] = useState('')
-  const allBooks = useQuery(FILTERBOOKSBYGENRE, {
-    variables: {genre: filter}
-  })
+  // const allBooks = useQuery(FILTERBOOKSBYGENRE, {
+  //   variables: {genre: filter}
+  // })
+  const allBooks = useQuery(ALLBOOKS)
   const allGenres = useQuery(ALLGENRES)
 
   
@@ -16,9 +17,10 @@ const Books = () => {
     return <div>Loading...</div>
   }
 
+  const books = filter !== '' ? allBooks.data.allBooks.filter(b => b.genres.includes(filter)) : allBooks.data.allBooks
+
   return (
     <>
-      
       <h2>books</h2>
       in genre <b>{filter !== '' ? filter : "all Genres"}</b>
       <table>
@@ -28,8 +30,8 @@ const Books = () => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {allBooks.data.filterBooksByGenre.map((a) => (
-            <tr key={a.title}>
+          {books.map((a) => (
+            <tr key={a._id}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
               <td>{a.published}</td>
@@ -39,7 +41,7 @@ const Books = () => {
       </table>
       <div>
         {allGenres.data.allGenres.map(genre => {
-          return <button onClick={() => setFilter(genre)}>{genre}</button>
+          return <button key={genre} onClick={() => setFilter(genre)}>{genre}</button>
         })}
         <button onClick={() => setFilter('')}>all Genres</button>
       </div>

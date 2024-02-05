@@ -16,7 +16,25 @@ import {
 } from 'react-router-dom'
 
 import { useSubscription } from '@apollo/client'
-import { BOOK_ADDED } from './queries.js'
+import { ALLBOOKS, BOOK_ADDED } from './queries.js'
+
+export const updateBooksCache = (cache, query, addedBook) => {
+  // helper that is used to eliminate saving same person twice
+  const uniqByName = (a) => {
+    let seen = new Set()
+    return a.filter((item) => {
+      let k = item._id
+      return seen.has(k) ? false : seen.add(k)
+    })
+  }
+
+  cache.updateQuery(query, ({allBooks}) => {
+    console.log("here")
+    return {
+      allBooks: uniqByName(allBooks.concat(addedBook))
+    }
+  })
+}
 
 const App = () => {
   const padding = {
@@ -32,16 +50,19 @@ const App = () => {
     setTimeout(() => setError(''), 5000)
   }
 
-  const ErrValue = { error, popup }
+  const ErrValue = { msg: error, setMsg: popup }
 
   useEffect(() => {
     setToken(localStorage.getItem('user-token'))
   }, [])
 
   useSubscription(BOOK_ADDED, {
-    onData: ({data}) => {
-      console.log(data.data.bookAdded)
-      popup(`Book ${data.data.bookAdded.title} by ${data.data.bookAdded.author} added`)
+    onData: ({data, client}) => {
+      const addedBook = data.data.bookAdded
+      alert(`Book ${addedBook.title} added`)
+
+      // updating the cache so book list updates immediately
+      updateBooksCache(client.cache, {query: ALLBOOKS}, addedBook)
     }
   })
 

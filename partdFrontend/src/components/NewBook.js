@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { useMutation } from '@apollo/client'
-import { CREATEBOOK, ALLBOOKS, ALLAUTHORS, FILTERBOOKSBYGENRE } from '../queries'
+import { ALLBOOKS, CREATEBOOK } from '../queries'
+import { updateBooksCache } from '../App'
+import { MsgContext } from '../contexts'
 
 const NewBook = () => {
   const [title, setTitle] = useState('')
@@ -9,8 +11,17 @@ const NewBook = () => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
+  const {setMsg} = useContext(MsgContext)
+
   const [ createBook ] = useMutation(CREATEBOOK, {
-    refetchQueries: [ { query: ALLAUTHORS }, { query: ALLBOOKS }, { query: FILTERBOOKSBYGENRE} ]
+    onError: (error) => {
+      const messages = error.graphQLErrors.map(e => e.message).join('\n')
+      setMsg(messages)
+    },
+    update: (cache, response) => {
+      console.log("UPDATING")
+      updateBooksCache(cache, {query: ALLBOOKS}, response.data.allBooks)
+    },
   })
 
   const submit = async (event) => {

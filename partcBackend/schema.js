@@ -10,6 +10,7 @@ const typeDefs = `
     author: Author!
     published: Int!
     genres: [String!]!
+    _id: ID!
   }
 
   type User {
